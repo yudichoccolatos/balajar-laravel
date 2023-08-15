@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
+
+    public function __construct()
+    {
+       $this->middleware('auth:api', ['except'=>'index']);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
+        $products = Product::all();
 
-        return response()->json($categories);
+        return response()->json($products);
     }
 
     /**
@@ -33,8 +38,17 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
+            'id_kategori'   => 'required',
+            'id_subkategori' =>'required',
             'deskripsi'     =>'required',
+            'nama_barang' =>'required',
+            'harga'     =>'required',
+            'diskon' =>'required',
+            'bahan'     =>'required',
+            'tags' =>'required',
+            'sku'     =>'required',
+            'ukuran' =>'required',
+            'warna'     =>'required',
             'gambar'        => 'required|image|mimes:jpg,png,jpeg,webp'
         ]);
 
@@ -51,16 +65,16 @@ class CategoryController extends Controller
             $input['gambar'] = $nama_gambar;
         }
 
-        $category = Category::create($input);
+        $Product = Product::create($input);
         return response()->json([
-            'data' => $category
+            'data' => $Product
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Product $Product)
     {
         //
     }
@@ -68,7 +82,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit (Category $category)
+    public function edit (Product $Product)
     {
         //
     }
@@ -76,11 +90,20 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Product $Product)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
-            'deskripsi'     =>'required'
+            'id_kategori'   => 'required',
+            'id_subkategori' =>'required',
+            'deskripsi'     =>'required',
+            'nama_barang' =>'required',
+            'harga'     =>'required',
+            'diskon' =>'required',
+            'bahan'     =>'required',
+            'tags' =>'required',
+            'sku'     =>'required',
+            'ukuran' =>'required',
+            'warna'     =>'required'
         ]);
 
         if ($validator->fails()) {
@@ -90,7 +113,7 @@ class CategoryController extends Controller
         }
         $input = $request->all();
         if ($request->has('gambar')){
-            File::delete('uploads/' . $category->gambar);
+            File::delete('uploads/' . $Product->gambar);
             $gambar = $request->file('gambar');
             $nama_gambar = time().rand(1, 9) . '.' . $gambar->getClientOriginalExtension();
             $gambar->move('uploads', $nama_gambar);
@@ -99,21 +122,21 @@ class CategoryController extends Controller
         else {
             unset($input['gambar']);
         }
-        $category->update($input);
+        $Product->update($input);
 
         return response()->json([
             'message'   =>'Update Success',
-            'data'      => $category
+            'data'      => $Product
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Product $Product)
     {
-        File::delete('uploads/' . $category->gambar);
-        $category->delete();
+        File::delete('uploads/' . $Product->gambar);
+        $Product->delete();
 
         return response()->json([
             'message'=>'success'

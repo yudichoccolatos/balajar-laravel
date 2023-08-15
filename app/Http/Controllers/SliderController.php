@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class SliderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
+        $sliders = Slider::all();
 
-        return response()->json($categories);
+        return response()->json($sliders);
     }
 
     /**
@@ -33,7 +33,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
+            'nama_slider' =>'required',
             'deskripsi'     =>'required',
             'gambar'        => 'required|image|mimes:jpg,png,jpeg,webp'
         ]);
@@ -51,16 +51,16 @@ class CategoryController extends Controller
             $input['gambar'] = $nama_gambar;
         }
 
-        $category = Category::create($input);
+        $Slider = Slider::create($input);
         return response()->json([
-            'data' => $category
+            'data' => $Slider
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Slider $Slider)
     {
         //
     }
@@ -68,7 +68,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit (Category $category)
+    public function edit (Slider $Slider)
     {
         //
     }
@@ -76,7 +76,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Slider $Slider)
     {
         $validator = Validator::make($request->all(), [
             'nama_kategori' =>'required',
@@ -90,7 +90,7 @@ class CategoryController extends Controller
         }
         $input = $request->all();
         if ($request->has('gambar')){
-            File::delete('uploads/' . $category->gambar);
+            File::delete('uploads/' . $Slider->gambar);
             $gambar = $request->file('gambar');
             $nama_gambar = time().rand(1, 9) . '.' . $gambar->getClientOriginalExtension();
             $gambar->move('uploads', $nama_gambar);
@@ -99,21 +99,21 @@ class CategoryController extends Controller
         else {
             unset($input['gambar']);
         }
-        $category->update($input);
+        $Slider->update($input);
 
         return response()->json([
             'message'   =>'Update Success',
-            'data'      => $category
+            'data'      => $Slider
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Slider $Slider)
     {
-        File::delete('uploads/' . $category->gambar);
-        $category->delete();
+        File::delete('uploads/' . $Slider->gambar);
+        $Slider->delete();
 
         return response()->json([
             'message'=>'success'

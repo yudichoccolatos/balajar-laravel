@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class MemberController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
+        $members = Member::all();
 
-        return response()->json($categories);
+        return response()->json($members);
     }
 
     /**
@@ -33,9 +33,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
-            'deskripsi'     =>'required',
-            'gambar'        => 'required|image|mimes:jpg,png,jpeg,webp'
+            'nama_member' =>'required',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
+            'kecamatan' => 'required',
+            'detail_alamat' => 'required',
+            'no_hp' => 'required',
+            'email' => 'required',
+            'password' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -44,23 +49,17 @@ class CategoryController extends Controller
             );
         }
         $input = $request->all();
-        if ($request->has('gambar')){
-            $gambar = $request->file('gambar');
-            $nama_gambar = time().rand(1, 9) . '.' . $gambar->getClientOriginalExtension();
-            $gambar->move('uploads', $nama_gambar);
-            $input['gambar'] = $nama_gambar;
-        }
-
-        $category = Category::create($input);
+       
+        $Member = Member::create($input);
         return response()->json([
-            'data' => $category
+            'data' => $Member
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Member $Member)
     {
         //
     }
@@ -68,7 +67,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit (Category $category)
+    public function edit (Member $Member)
     {
         //
     }
@@ -76,11 +75,17 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Member $Member)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
-            'deskripsi'     =>'required'
+            'nama_member' =>'required',
+            'provinsi' => 'required',
+            'kabupaten' => 'required',
+            'kecamatan' => 'required',
+            'detail_alamat' => 'required',
+            'no_hp' => 'required',
+            'email' => 'required',
+            'password' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -89,31 +94,22 @@ class CategoryController extends Controller
             );
         }
         $input = $request->all();
-        if ($request->has('gambar')){
-            File::delete('uploads/' . $category->gambar);
-            $gambar = $request->file('gambar');
-            $nama_gambar = time().rand(1, 9) . '.' . $gambar->getClientOriginalExtension();
-            $gambar->move('uploads', $nama_gambar);
-            $input['gambar'] = $nama_gambar;
-        }
-        else {
-            unset($input['gambar']);
-        }
-        $category->update($input);
+        
+        $Member->update($input);
 
         return response()->json([
             'message'   =>'Update Success',
-            'data'      => $category
+            'data'      => $Member
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Member $Member)
     {
-        File::delete('uploads/' . $category->gambar);
-        $category->delete();
+        
+        $Member->delete();
 
         return response()->json([
             'message'=>'success'

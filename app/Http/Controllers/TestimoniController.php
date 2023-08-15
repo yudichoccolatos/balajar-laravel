@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Testimoni;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class TestimoniController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
+        $testimonies = Testimoni::all();
 
-        return response()->json($categories);
+        return response()->json($testimonies);
     }
 
     /**
@@ -33,7 +33,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
+            'nama_testimoni' =>'required',
             'deskripsi'     =>'required',
             'gambar'        => 'required|image|mimes:jpg,png,jpeg,webp'
         ]);
@@ -51,16 +51,16 @@ class CategoryController extends Controller
             $input['gambar'] = $nama_gambar;
         }
 
-        $category = Category::create($input);
+        $Testimoni = Testimoni::create($input);
         return response()->json([
-            'data' => $category
+            'data' => $Testimoni
         ]);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Testimoni $Testimoni)
     {
         //
     }
@@ -68,7 +68,7 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit (Category $category)
+    public function edit(Testimoni $Testimoni)
     {
         //
     }
@@ -76,10 +76,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Testimoni $Testimoni)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' =>'required',
+            'nama_testimoni' =>'required',
             'deskripsi'     =>'required'
         ]);
 
@@ -90,7 +90,7 @@ class CategoryController extends Controller
         }
         $input = $request->all();
         if ($request->has('gambar')){
-            File::delete('uploads/' . $category->gambar);
+            File::delete('uploads/' . $Testimoni->gambar);
             $gambar = $request->file('gambar');
             $nama_gambar = time().rand(1, 9) . '.' . $gambar->getClientOriginalExtension();
             $gambar->move('uploads', $nama_gambar);
@@ -99,21 +99,21 @@ class CategoryController extends Controller
         else {
             unset($input['gambar']);
         }
-        $category->update($input);
+        $Testimoni->update($input);
 
         return response()->json([
             'message'   =>'Update Success',
-            'data'      => $category
+            'data'      => $Testimoni
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Testimoni $Testimoni)
     {
-        File::delete('uploads/' . $category->gambar);
-        $category->delete();
+        File::delete('uploads/' . $Testimoni->gambar);
+        $Testimoni->delete();
 
         return response()->json([
             'message'=>'success'
